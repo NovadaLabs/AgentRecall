@@ -1,6 +1,6 @@
 {
   "name": "agent-recall-mcp",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "AI session memory with Think-Execute-Reflect quality loops — give your agent a brain that survives every session",
   "type": "module",
   "main": "dist/index.js",
@@ -43,7 +43,8 @@
   },
   "homepage": "https://github.com/Goldentrii/AgentRecall#mcp-server",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.28.0"
+    "@modelcontextprotocol/sdk": "^1.28.0",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "typescript": "^5.7.0",

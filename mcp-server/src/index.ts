@@ -145,7 +145,13 @@ async function detectProject(): Promise<string> {
  * For writes, always use the new location.
  */
 function journalDir(project: string): string {
-  return path.join(JOURNAL_ROOT, "projects", project, "journal");
+  // Sanitize: prevent path traversal (e.g. "../../etc")
+  const safe = project.replace(/[^a-zA-Z0-9_\-\.]/g, "-");
+  const resolved = path.join(JOURNAL_ROOT, "projects", safe, "journal");
+  if (!resolved.startsWith(JOURNAL_ROOT)) {
+    throw new Error(`Invalid project name: ${project}`);
+  }
+  return resolved;
 }
 
 /**
@@ -327,12 +333,14 @@ function appendToSection(
     );
   }
 
-  // Find the end of this section (next ## header or EOF)
+  // Find the end of this section (next ## header or EOF, respecting code fences)
   const afterHeader = existingContent.slice(idx);
   const lines = afterHeader.split("\n");
   let insertAt = lines.length;
+  let inCodeFence = false;
   for (let i = 1; i < lines.length; i++) {
-    if (lines[i].startsWith("## ")) {
+    if (lines[i].startsWith("```")) inCodeFence = !inCodeFence;
+    if (!inCodeFence && lines[i].startsWith("## ")) {
       insertAt = i;
       break;
     }

@@ -116,114 +116,44 @@ token cost annotations
 
 ## Emoji Playground — User-Defined Vocabulary
 
-> **What this is**: An extensible layer on top of the built-in emoji table.
-> Users define their own emoji → meaning mappings. Once defined, both
-> human and agent can use those emoji as compressed tokens — a single
-> character replaces a full phrase in any journal entry, observation, or
-> message. This is the Intelligent Distance protocol in action: building a
-> shared semantic layer that reduces information-loss on every exchange.
->
-> **Agent rule**: On every session resume AND before writing any Layer 2 journal,
-> check if `journal/emoji-vocab.md` exists. If yes, load it. Custom emoji
-> take effect immediately and silently — no need to announce it.
->
-> **Conflict rule**: Custom emoji CANNOT override built-in emoji above.
-> If user tries to redefine 🔴/🟡/🟢/✅/❌/🚧/🔒/⚡/💡/🔧/🧠/⬚/⏱ → inform them
-> those are reserved, suggest an alternative.
+Custom emoji → meaning mappings stored in `journal/emoji-vocab.md`. Loaded at session start.
+Say `emoji 🚀 = shipped` to add, `show emojis` to list, `emoji help` for palette suggestions.
+Custom emoji CANNOT override built-in emoji above. See `journal/emoji-vocab.md` for full spec.
 
-### Playground Commands
+---
 
-Recognize all of these as emoji playground operations:
+## Alignment Detection Protocol
 
-| What user says | Action |
-|----------------|--------|
-| `emoji 🚀 = feature launch` | Add/update definition |
-| `add emoji 🚀 = feature launch` | Same |
-| `🚀 means feature launch` | Same |
-| `what does 🚀 mean?` / `emoji? 🚀` | Lookup — check both built-in table and vocab file |
-| `show emojis` / `list emojis` / `我的 emoji` | Display all custom definitions |
-| `remove emoji 🚀` / `delete emoji 🚀` | Remove from vocab file |
-| `emoji help` / `emoji ideas` | Show the Suggested Emoji Palette below |
+> When confused or unsure about human intent: **check alignment before acting.**
+> A 5-second check beats 30 minutes of wrong work.
 
-### Storage
+### When to check
+- **Before** starting a complex task (>10 min estimated work)
+- **When** the human's request is ambiguous or contradicts a prior decision
+- **After** receiving scattered, non-linear input (restructurize + confirm)
 
-**File**: `journal/emoji-vocab.md`
-
-```markdown
-# Emoji Vocabulary — Custom Definitions
-> User-defined emoji meanings. Loaded at session start by agent.
-> Edit directly or use emoji commands in conversation.
-
-| Emoji | Meaning | EN | Added |
-|-------|---------|-----|-------|
-| 🚀 | Feature shipped / launched | ship | 2026-03-24 |
-| 🔥 | High energy / going really well | hot | 2026-03-24 |
+### Alignment Check format
+```
+ALIGNMENT CHECK:
+- Goal: [agent's understanding in one line]
+- Confidence: [high/medium/low]
+- Assumptions: [what agent is assuming without being told]
+- Unclear: [what agent can't figure out from context]
 ```
 
-When adding a definition: append a row to this table. Do not rewrite existing rows unless updating.
-When removing: delete the row. Keep the file clean — no comments on deleted entries.
-If file doesn't exist: create it with the header template on first emoji add.
+Wait for human response. Record the delta (if any) via `alignment_check` MCP tool.
 
-### Suggested Emoji Palette
+### Nudge Protocol
 
-Show this when user asks for `emoji ideas` or `emoji help`. Grouped by semantic domain.
-Users pick what resonates with their workflow:
-
+When the agent detects the human contradicts a prior decision:
 ```
-── Progress & Status ──────────────────────────────────────────
-🚀  shipped / launched       🌱  early / growing
-🏁  milestone reached        💤  paused / deprioritized
-🔁  iterating / reworking    🧩  piece of a larger puzzle
-🎯  on target                🌊  chaotic / lots of moving parts
-
-── Quality & Confidence ───────────────────────────────────────
-💎  solid / production-ready 🧪  experimental / not proven yet
-🌿  clean code / healthy     ⚠️  watch out / caution
-🏆  best solution found      ❓  unresolved / needs answer
-
-── Energy & Momentum ──────────────────────────────────────────
-🔥  going really well        🧊  cold / stalled / zero energy
-⚡  quick win / easy          🌀  going in circles
-💪  hard push / grind mode   🎉  celebrating / milestone
-
-── People & Context ───────────────────────────────────────────
-👤  user / customer          👥  team / collaboration
-📣  needs announcement       🤝  dependency on external person
-🕐  time pressure / deadline ☕  low urgency / can wait
-
-── Technical Domains ──────────────────────────────────────────
-🗄️  database / data          🔐  security / auth
-📡  API / network            🎨  UI / design / frontend
-🤖  AI / agent / model       📦  package / dependency
-🏗️  architecture / infra     📊  analytics / metrics / data
-
-── Decision & Knowledge ───────────────────────────────────────
-💡  idea / insight            📝  documentation needed
-🔍  needs investigation       🗑️  candidate for deletion
-🔄  needs refactor            💰  cost / budget concern
-📈  growing / scaling up      📉  declining / shrinking
+NUDGE:
+- Past: [what was decided, with date]
+- Now: [what's being asked now]
+- Question: [one clarifying question]
 ```
 
-**Note**: Any emoji not listed here also works. These are just starting points.
-The best vocabulary is the one that feels natural to you.
-
-### How Custom Emoji Compress Tokens
-
-Without vocabulary:
-> "The authentication module is experimental and not yet production-ready. We shipped the payments feature today."
-
-With vocabulary (🧪 = experimental, 🚀 = shipped):
-> "Auth module 🧪. Payments 🚀 today."
-
-Same information. ~60% fewer tokens. Agent parses identically because it loaded the definitions.
-Over a project lifetime with 20+ custom emoji, every journal entry shrinks by 30–50%.
-
-### Emoji Vocabulary Load Order
-
-When reading a journal entry:
-1. Load built-in table (always applies)
-2. Load `journal/emoji-vocab.md` (if exists)
-3. Interpret all emoji in the journal using combined vocabulary
+**Rules**: Max 2 nudges per session. Frame as curiosity, not correction. If human confirms the change, update the decision record. If human didn't realize the contradiction, they'll thank you.
 4. If an emoji is unknown (not in either table): note it as undefined in Section 9
 
 ---
