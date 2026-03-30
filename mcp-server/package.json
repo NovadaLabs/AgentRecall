@@ -1,0 +1,33 @@
+{
+  "name": "project-journal-mcp",
+  "version": "1.0.0",
+  "description": "Two-layer AI session memory — read, write, and navigate project journals via MCP",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "project-journal-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "keywords": [
+    "mcp",
+    "journal",
+    "ai-memory",
+    "session-memory",
+    "project-journal"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.28.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
