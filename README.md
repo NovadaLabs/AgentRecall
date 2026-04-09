@@ -1,8 +1,6 @@
-<p align="center">
-  <h1 align="center">AgentRecall</h1>
-  <p align="center"><strong>Memory Palace for AI Agents — A Second Brain That Compounds</strong></p>
-  <p align="center">Room-based knowledge organization · Cross-project insight recall · Salience scoring · Obsidian-compatible</p>
-</p>
+<h1 align="center">AgentRecall</h1>
+
+<p align="center"><strong>Your AI agent forgets everything between sessions. AgentRecall fixes that.</strong></p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/agent-recall-mcp"><img src="https://img.shields.io/npm/v/agent-recall-mcp?style=flat-square&color=5D34F2" alt="npm"></a>
@@ -13,43 +11,58 @@
   <img src="https://img.shields.io/badge/Obsidian-compatible-7C3AED?style=flat-square" alt="Obsidian">
 </p>
 
+<p align="center">
+  <b>EN:</b>&nbsp;
+  <a href="#what-is-agentrecall">What</a> ·
+  <a href="#when-to-use-agentrecall">When</a> ·
+  <a href="#quick-start">Install</a> ·
+  <a href="#22-mcp-tools">Tools</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#docs">Docs</a>
+  &nbsp;&nbsp;|&nbsp;&nbsp;
+  <b>中文:</b>&nbsp;
+  <a href="#agentrecall是什么">简介</a> ·
+  <a href="#快速开始">安装</a> ·
+  <a href="#22-个-mcp-工具">工具</a> ·
+  <a href="#架构">架构</a> ·
+  <a href="#贡献">联系</a>
+</p>
+
 ---
 
-<table>
-<tr>
-<td width="50%">
+## What Is AgentRecall?
 
-### English — Quick Navigation
+An **MCP server** that gives AI agents persistent memory that **compounds** across sessions. Not a log. Not a database. A second brain that gets smarter the more you use it.
 
-- [Save & Start Commands](#arsave--save-everything-in-one-shot)
-- [What Is AgentRecall?](#what-is-agentrecall)
-- [Quick Start / Install](#quick-start)
-- [How Agents Use It](#how-an-agent-uses-agentrecall)
-- [22 MCP Tools](#22-mcp-tools)
-- [Architecture & Memory Palace](#architecture)
-- [Intelligent Distance Protocol](#intelligent-distance-protocol)
-- [Supported Agents](#supported-agents)
-- [Design Philosophy](#design-philosophy)
-- [Docs & Specs](#docs)
-- [Contributing](#contributing)
+**The problem:** AI agents start from zero every session. They forget your decisions, repeat your mistakes, lose context mid-project, and misunderstand you the same way twice.
 
-</td>
-<td width="50%">
+**The fix:** AgentRecall stores knowledge in a five-layer memory pyramid — from quick captures to cross-project insights — and forces compression so memory gets more valuable over time, not more bloated.
 
-### 中文 — 快速导航
+| Without AgentRecall | With AgentRecall |
+|---------------------|------------------|
+| Agent forgets yesterday's decisions | Decisions live in palace rooms, loaded on cold start |
+| Same mistake repeated across sessions | `recall_insight` surfaces past lessons before work starts |
+| 5 min context recovery on each session start | 2 second cold start from palace (~200 tokens) |
+| Flat memory files that grow forever | 200-line awareness cap forces merge-or-replace |
+| Knowledge trapped in one project | Cross-project insights match by keyword |
+| Agent misunderstands, you correct, it forgets | `alignment_check` records corrections permanently |
 
-- [什么是 AgentRecall？](#agentrecall是什么)
-- [快速开始 / 安装](#快速开始)
-- [智能体使用流程](#智能体使用流程)
-- [22 个 MCP 工具](#22-个-mcp-工具)
-- [五层记忆模型 / 架构](#架构)
-- [智能距离协议](#智能距离协议)
-- [设计理念](#设计理念)
-- [贡献 / 联系](#贡献)
+---
 
-</td>
-</tr>
-</table>
+## When to Use AgentRecall
+
+**Use it if:**
+- You work with AI agents on **multi-session projects** (not one-shot tasks)
+- You want your agent to **remember decisions** from last week
+- You're tired of **re-explaining** the same context every session
+- You use **multiple projects** and want lessons to transfer between them
+- You want to **browse your agent's knowledge** in Obsidian or any text editor
+
+**Don't use it if:**
+- You only do single-turn Q&A (no sessions to remember)
+- You don't want anything stored on disk
+
+**Works with:** Claude Code, Cursor, Windsurf, VS Code, Codex, and any MCP-compatible agent.
 
 ---
 
@@ -69,29 +82,6 @@ Type `/arsave` after a long project session. Everything gets saved. Type `/arsta
 mkdir -p ~/.claude/commands
 curl -o ~/.claude/commands/arsave.md https://raw.githubusercontent.com/Goldentrii/AgentRecall/main/commands/arsave.md
 curl -o ~/.claude/commands/arstart.md https://raw.githubusercontent.com/Goldentrii/AgentRecall/main/commands/arstart.md
-```
-
----
-
-## What Is AgentRecall?
-
-AgentRecall is an **MCP server** (Model Context Protocol) that gives AI agents persistent memory, cross-project insight recall, and a self-compounding awareness system. It works with Claude Code, Cursor, VS Code, Windsurf, and any MCP-compatible agent.
-
-**Not just a memory system.** Most agent memory tools store and retrieve. AgentRecall also:
-- **Organizes** knowledge into themed rooms (Memory Palace)
-- **Compounds** — insights merge and strengthen over time, not just accumulate
-- **Cross-references** — writing to one room auto-updates related rooms
-- **Recalls** — before starting a task, surfaces relevant lessons from any project
-- **Detects misunderstanding** — measures the gap between human intent and agent interpretation
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│  Layer 1: Quick Capture     journal_capture                  │
-│  Layer 2: Daily Journal     journal_write / journal_read     │
-│  Layer 3: Memory Palace     palace_write / palace_walk       │
-│  Layer 4: Awareness         awareness_update (compounding)   │
-│  Layer 5: Insight Index     recall_insight (cross-project)   │
-└──────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -328,20 +318,35 @@ MIT License.
 
 # AgentRecall（中文文档）
 
-> 给你的 AI 智能体一个会成长的第二大脑。
+> **你的 AI 智能体每次对话都从零开始。AgentRecall 解决这个问题。**
 
 ---
 
 ## AgentRecall 是什么？
 
-AgentRecall 是一个 **MCP 服务器**（Model Context Protocol），为 AI 智能体提供持久化记忆、跨项目洞察召回和自复合感知系统。支持 Claude Code、Cursor、VS Code、Windsurf 及所有 MCP 兼容的智能体。
+一个 **MCP 服务器**，让 AI 智能体拥有**跨会话复合记忆**。不是日志，不是数据库——是一个用得越多越聪明的第二大脑。
 
-**不只是记忆系统。** 大多数智能体记忆工具只做存储和检索。AgentRecall 还能：
-- **组织** — 知识按主题房间分类（记忆宫殿）
-- **复合** — 洞察随时间合并增强，不是单纯累积
-- **交叉引用** — 写入一个房间时自动更新相关房间
-- **召回** — 开始任务前，自动呈现任何项目中的相关经验教训
-- **检测误解** — 测量人类意图和智能体理解之间的差距
+**问题：** AI 智能体每次会话都是全新开始。忘记你的决策，重复同样的错误，丢失项目上下文，以同样的方式误解你。
+
+**解决方案：** AgentRecall 将知识存储在五层记忆金字塔中——从快速捕获到跨项目洞察——并通过强制压缩让记忆随时间增值，而不是膨胀。
+
+| 没有 AgentRecall | 有 AgentRecall |
+|-----------------|---------------|
+| 智能体忘记昨天的决策 | 决策存在宫殿房间，冷启动时加载 |
+| 跨会话重复同样的错误 | `recall_insight` 工作前自动呈现过去教训 |
+| 每次开始需要 5 分钟恢复上下文 | 2 秒冷启动，从宫殿加载（~200 token） |
+| 平面记忆文件无限增长 | 200 行感知上限，强制合并或替换 |
+| 知识锁在单个项目 | 跨项目洞察按关键词匹配 |
+
+### 什么时候用 AgentRecall？
+
+**适合你，如果：**
+- 你在**多会话项目**中使用 AI 智能体（不是一次性问答）
+- 你希望智能体**记住**上周的决策
+- 你厌倦了每次会话**重新解释**同样的上下文
+- 你有**多个项目**，希望经验教训互通
+
+**支持：** Claude Code、Cursor、Windsurf、VS Code、Codex 及所有 MCP 兼容智能体。
 
 ---
 
