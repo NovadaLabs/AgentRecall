@@ -7,11 +7,49 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/agent-recall-mcp"><img src="https://img.shields.io/npm/v/agent-recall-mcp?style=flat-square&color=5D34F2" alt="npm"></a>
   <a href="https://github.com/Goldentrii/AgentRecall/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square" alt="License"></a>
-  <img src="https://img.shields.io/badge/MCP-21_tools-orange?style=flat-square" alt="Tools">
+  <img src="https://img.shields.io/badge/MCP-22_tools-orange?style=flat-square" alt="Tools">
   <img src="https://img.shields.io/badge/protocol-Intelligent_Distance-5B2D8E?style=flat-square" alt="Protocol">
   <img src="https://img.shields.io/badge/cloud-zero-blue?style=flat-square" alt="Zero Cloud">
   <img src="https://img.shields.io/badge/Obsidian-compatible-7C3AED?style=flat-square" alt="Obsidian">
 </p>
+
+---
+
+<table>
+<tr>
+<td width="50%">
+
+### English — Quick Navigation
+
+- [Save & Start Commands](#arsave--save-everything-in-one-shot)
+- [What Is AgentRecall?](#what-is-agentrecall)
+- [Quick Start / Install](#quick-start)
+- [How Agents Use It](#how-an-agent-uses-agentrecall)
+- [22 MCP Tools](#22-mcp-tools)
+- [Architecture & Memory Palace](#architecture)
+- [Intelligent Distance Protocol](#intelligent-distance-protocol)
+- [Supported Agents](#supported-agents)
+- [Design Philosophy](#design-philosophy)
+- [Docs & Specs](#docs)
+- [Contributing](#contributing)
+
+</td>
+<td width="50%">
+
+### 中文 — 快速导航
+
+- [什么是 AgentRecall？](#agentrecall是什么)
+- [快速开始 / 安装](#快速开始)
+- [智能体使用流程](#智能体使用流程)
+- [22 个 MCP 工具](#22-个-mcp-工具)
+- [五层记忆模型 / 架构](#架构)
+- [智能距离协议](#智能距离协议)
+- [设计理念](#设计理念)
+- [贡献 / 联系](#贡献)
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -110,7 +148,7 @@ curl -o ~/.claude/skills/agent-recall/SKILL.md \
 
 ---
 
-## 21 MCP Tools
+## 22 MCP Tools
 
 ### Memory Palace (5 tools)
 
@@ -145,8 +183,9 @@ curl -o ~/.claude/skills/agent-recall/SKILL.md \
 | Tool | Purpose |
 |------|---------|
 | `journal_state` | JSON state layer — structured read/write for agent-to-agent handoffs |
-| `journal_cold_start` | Cache-aware cold start: HOT (0-1d) / WARM (2-7d) / COLD (7d+) |
+| `journal_cold_start` | Palace-first cold start: loads identity + awareness + top rooms (~200 tok), then HOT journals only |
 | `journal_archive` | Archive old entries to cold storage with summaries |
+| `journal_rollup` | Condense old daily journals into weekly summaries. Prevents accumulation. `dry_run=true` to preview |
 
 ### Knowledge (2 tools)
 
@@ -261,13 +300,25 @@ Validated over 30+ sessions across 5 production projects:
 
 ---
 
+## Docs
+
+| Document | Description |
+|----------|-------------|
+| [Intelligent Distance Protocol](docs/intelligent-distance-protocol.md) | The foundational theory — why the gap between human and AI is structural, and how to navigate it |
+| [MCP Adapter Spec](docs/mcp-adapter-spec.md) | Technical spec for building adapters on top of AgentRecall |
+| [SDK Design](docs/sdk-design.md) | Design doc for Python/Node SDK (future) |
+| [Upgrade v3.4](UPGRADE-v3.4.md) | Changelog: weekly roll-up, palace-first cold start, promotion verification |
+
+---
+
 ## Contributing
 
-Built by [tongwu](https://github.com/Goldentrii).
+Built by [tongwu](https://github.com/Goldentrii) at [Novada](https://www.novada.com).
 
 - Issues & feedback: [GitHub Issues](https://github.com/Goldentrii/AgentRecall/issues)
-- Email: tongwu0824@gmail.com
-- Protocol spec: [docs/intelligent-distance-protocol.md](https://github.com/Goldentrii/AgentRecall/blob/main/docs/intelligent-distance-protocol.md)
+- Email: [tong.wu@novada.com](mailto:tong.wu@novada.com)
+- Website: [novada.com](https://www.novada.com)
+- Protocol spec: [docs/intelligent-distance-protocol.md](docs/intelligent-distance-protocol.md)
 
 MIT License.
 
@@ -343,7 +394,7 @@ curl -o ~/.claude/skills/agent-recall/SKILL.md \
 
 ---
 
-## 21 个 MCP 工具
+## 22 个 MCP 工具
 
 ### 记忆宫殿（5 个）
 
@@ -378,8 +429,9 @@ curl -o ~/.claude/skills/agent-recall/SKILL.md \
 | 工具 | 功能 |
 |------|------|
 | `journal_state` | JSON 状态层 — agent 间毫秒级结构化交接 |
-| `journal_cold_start` | 缓存感知冷启动：热 (0-1天) / 温 (2-7天) / 冷 (7天+) |
+| `journal_cold_start` | 宫殿优先冷启动：先加载身份+感知+高权重房间(~200 token)，再加载日志 |
 | `journal_archive` | 归档旧条目到冷存储 |
+| `journal_rollup` | 将旧日志压缩为周报。防止日志无限积累。`dry_run=true` 预览 |
 
 ### 知识工具（2 个）
 
@@ -451,12 +503,24 @@ curl -o ~/.claude/skills/agent-recall/SKILL.md \
 
 ---
 
+## 文档
+
+| 文档 | 说明 |
+|------|------|
+| [智能距离协议](docs/intelligent-distance-protocol.md) | 基础理论 — 人类与 AI 之间的差距是结构性的，如何导航 |
+| [MCP 适配器规范](docs/mcp-adapter-spec.md) | 基于 AgentRecall 构建适配器的技术规范 |
+| [SDK 设计](docs/sdk-design.md) | Python/Node SDK 设计文档（未来） |
+| [v3.4 升级说明](UPGRADE-v3.4.md) | 周报压缩、宫殿优先冷启动、提升验证 |
+
+---
+
 ## 贡献
 
-由 [tongwu](https://github.com/Goldentrii) 构建。
+由 [tongwu](https://github.com/Goldentrii) 在 [Novada](https://www.novada.com) 构建。
 
 - Issues & 反馈：[GitHub Issues](https://github.com/Goldentrii/AgentRecall/issues)
-- 邮箱：tongwu0824@gmail.com
-- 协议规范：[docs/intelligent-distance-protocol.md](https://github.com/Goldentrii/AgentRecall/blob/main/docs/intelligent-distance-protocol.md)
+- 邮箱：[tong.wu@novada.com](mailto:tong.wu@novada.com)
+- 网站：[novada.com](https://www.novada.com)
+- 协议规范：[docs/intelligent-distance-protocol.md](docs/intelligent-distance-protocol.md)
 
 MIT 许可证。
