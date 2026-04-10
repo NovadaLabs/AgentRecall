@@ -17,11 +17,25 @@ export function listJournalFiles(project: string): JournalEntry[] {
   const entries: JournalEntry[] = [];
   const seen = new Set<string>();
 
+  // First pass: look for YYYY-MM-DD.md journal entries
   for (const dir of dirs) {
     if (!fs.existsSync(dir)) continue;
     const files = fs.readdirSync(dir);
     for (const file of files) {
       const match = file.match(/^(\d{4}-\d{2}-\d{2})\.md$/);
+      if (match && !seen.has(match[1])) {
+        seen.add(match[1]);
+        entries.push({ date: match[1], file, dir });
+      }
+    }
+  }
+
+  // Second pass: include YYYY-MM-DD-log.md capture files for dates not already covered
+  for (const dir of dirs) {
+    if (!fs.existsSync(dir)) continue;
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+      const match = file.match(/^(\d{4}-\d{2}-\d{2})-log\.md$/);
       if (match && !seen.has(match[1])) {
         seen.add(match[1]);
         entries.push({ date: match[1], file, dir });
@@ -37,15 +51,17 @@ export function listJournalFiles(project: string): JournalEntry[] {
  * Read a journal file. Checks primary dir first, then legacy.
  */
 export function readJournalFile(project: string, date: string): string | null {
-  const filename = `${date}.md`;
   const dirs = journalDirs(project);
   const primaryDir = journalDir(project);
   const allDirs = [primaryDir, ...dirs.filter((d) => d !== primaryDir)];
 
-  for (const dir of allDirs) {
-    const filePath = path.join(dir, filename);
-    if (fs.existsSync(filePath)) {
-      return fs.readFileSync(filePath, "utf-8");
+  // Try YYYY-MM-DD.md first, then fall back to YYYY-MM-DD-log.md
+  for (const filename of [`${date}.md`, `${date}-log.md`]) {
+    for (const dir of allDirs) {
+      const filePath = path.join(dir, filename);
+      if (fs.existsSync(filePath)) {
+        return fs.readFileSync(filePath, "utf-8");
+      }
     }
   }
   return null;
